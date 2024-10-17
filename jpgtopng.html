@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>JPG zu PNG Konverter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        input, button {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JPG zu PNG Konverter</h1>
+    <input type="file" id="upload" accept="image/jpeg">
+    <br>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <br>
+    <a id="downloadLink" style="display: none;">PNG herunterladen</a>
+
+    <script>
+        document.getElementById('upload').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file && file.type === 'image/jpeg') {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var img = new Image();
+                    img.onload = function() {
+                        var canvas = document.getElementById('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        var ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        var pngDataUrl = canvas.toDataURL('image/png');
+                        var downloadLink = document.getElementById('downloadLink');
+                        downloadLink.href = pngDataUrl;
+                        downloadLink.download = 'converted.png';
+                        downloadLink.style.display = 'inline';
+                        downloadLink.textContent = 'PNG herunterladen';
+                    }
+                    img.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                alert('Bitte wählen Sie eine JPG-Datei aus.');
+            }
+        });
+    </script>
+</body>
+</html>
